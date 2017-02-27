@@ -222,11 +222,14 @@ static NSString *dataCallbackId = nil;
             port = [_starIoExtManager port];
         }
 
-        [commands appendBytes:"\x1b\x1d\x61\x01" length:sizeof("\x1b\x1d\x61\x01") - 1];    // Alignment (Center)
 
-        [commands appendData:[content dataUsingEncoding:NSASCIIStringEncoding]];
+        [commands appendBytes:content length:sizeof(content - 1];   
 
-        [commands appendBytes:"\x1b\x64\x03" length:sizeof("\x1b\x64\x03") - 1];    // CutPaper(Feed&Partial)
+        // [commands appendBytes:"\x1b\x1d\x61\x01" length:sizeof("\x1b\x1d\x61\x01") - 1];    // Alignment (Center)
+
+        // [commands appendData:[content dataUsingEncoding:NSASCIIStringEncoding]];
+
+        // [commands appendBytes:"\x1b\x64\x03" length:sizeof("\x1b\x64\x03") - 1];    // CutPaper(Feed&Partial)
 
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock lock];
