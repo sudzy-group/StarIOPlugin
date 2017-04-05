@@ -20,12 +20,9 @@
 #include <starmicronics/StarIOPort.h>
 #endif
 
-enum Emulation {
-    StarLineMode,
-    ESCPOSMode
-};
+#import "enum.h"
 
-@interface BluetoothPort : NSObject<NSStreamDelegate> {
+@interface BluetoothPort : NSObject <NSStreamDelegate> {
     NSString *portName_;
     NSString *portSettings_;
     u_int32_t timeout_;
@@ -35,8 +32,8 @@ enum Emulation {
     
     NSMutableData *_writeData;
     NSMutableData *_readData;
-    
-    enum Emulation emulation;
+
+    SMEmulation p_emulation;
 }
 @property(readonly, getter = isConnected) BOOL connected;
 @property(readwrite) u_int32_t endCheckedBlockTimeoutMillis;
@@ -47,7 +44,7 @@ enum Emulation {
 
 @property(assign, readonly) BOOL isDKAirCash;
 
-- (id)initWithPortName:(NSString *)portName portSettings:(NSString *)portSettings timeout:(u_int32_t)timeout;
+- (id)initWithPortName:(NSString *)portName portSettings:(NSString *)portSettings timeout:(u_int32_t)timeout emulation:(SMEmulation)emulation;
 - (BOOL)open;
 - (int)write:(NSData *)data;
 - (NSData *)read:(NSUInteger)bytesToRead;

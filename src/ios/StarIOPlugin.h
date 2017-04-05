@@ -48,4 +48,5 @@
 - (void)checkStatus:(CDVInvokedUrlCommand *)command;
 - (void)connect:(CDVInvokedUrlCommand *)command;
 - (void)printReceipt:(CDVInvokedUrlCommand *)command;
+- (void)printImage:(CDVInvokedUrlCommand *)command;
 @end

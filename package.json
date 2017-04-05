@@ -1,6 +1,6 @@
 {
   "name": "cordova-stario-plugin",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "description": "pluging to use StarIO printer",
   "cordova": {
     "id": "fr.sellsy.startio",

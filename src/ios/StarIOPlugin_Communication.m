@@ -14,61 +14,61 @@
 
 + (BOOL)sendCommands:(NSData *)commands port:(SMPort *)port {
     BOOL result = NO;
-    
+
     NSString *title   = @"";
     NSString *message = @"";
-    
+
     uint32_t commandLength = (uint32_t) [commands length];
-    
+
     unsigned char *commandsBytes = (unsigned char *) [commands bytes];
-    
+
     @try {
         while (YES) {
             if (port == nil) {
                 title = @"Fail to Open Port";
                 break;
             }
-            
+
             StarPrinterStatus_2 printerStatus;
-            
+
             [port beginCheckedBlock:&printerStatus :2];
-            
+
             if (printerStatus.offline == SM_TRUE) {
                 title   = @"Printer Error";
                 message = @"Printer is offline (BeginCheckedBlock)";
                 break;
             }
-            
+
             NSDate *startDate = [NSDate date];
-            
+
             uint32_t total = 0;
-            
+
             while (total < commandLength) {
                 uint32_t written = [port writePort:commandsBytes :total :commandLength - total];
-                
+
                 total += written;
-                
+
                 if ([[NSDate date] timeIntervalSinceDate:startDate] >= 30.0) {     // 30000mS!!!
                     break;
                 }
             }
-            
+
             if (total < commandLength) {
                 title   = @"Printer Error";
                 message = @"Write port timed out";
                 break;
             }
-            
+
             port.endCheckedBlockTimeoutMillis = 30000;     // 30000mS!!!
-            
+
             [port endCheckedBlock:&printerStatus :2];
-            
+
             if (printerStatus.offline == SM_TRUE) {
                 title   = @"Printer Error";
                 message = @"Printer is offline (endCheckedBlock)";
                 break;
             }
-            
+
             result = YES;
             break;
         }
@@ -77,7 +77,12 @@
         title   = @"Printer Error";
         message = @"Write port timed out (PortException)";
     }
-    
+
+    if (![title isEqualToString:@""]) {
+      NSLog(title);
+      NSLog(message);
+    }
+
     return result;
 }
 
@@ -143,6 +148,11 @@
     @catch (PortException *exc) {
         title   = @"Printer Error";
         message = @"Write port timed out (PortException)";
+    }
+
+    if (![title isEqualToString:@""]) {
+      NSLog(title);
+      NSLog(message);
     }
 
     return result;
@@ -221,10 +231,10 @@
         title   = @"Printer Error";
         message = @"Write port timed out (PortException)";
     }
-    @finally {
-        if (port != nil) {
-            [SMPort releasePort:port];
-        }
+
+    if (![title isEqualToString:@""]) {
+      NSLog(title);
+      NSLog(message);
     }
 
     return result;
@@ -301,12 +311,12 @@
         title   = @"Printer Error";
         message = @"Write port timed out (PortException)";
     }
-    @finally {
-        if (port != nil) {
-            [SMPort releasePort:port];
-        }
+
+    if (![title isEqualToString:@""]) {
+      NSLog(title);
+      NSLog(message);
     }
-    
+
     return result;
 }
 

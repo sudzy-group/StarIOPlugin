@@ -41,7 +41,7 @@
 - (int32_t)write:(NSData *)data;
 - (NSData *)read:(NSUInteger)bytesToRead;
 - (BOOL)getParsedStatus:(StarPrinterStatus_2 *)starPrinterStatus level:(u_int32_t)level;
-- (BOOL)getParsedStatus:(StarPrinterStatus_2 *)starPrinterStatus level:(u_int32_t)level timeout:(__darwin_time_t)timeoutSec;
+- (BOOL)getParsedStatus:(StarPrinterStatus_2 *)starPrinterStatus level:(u_int32_t)level timeoutSec:(__darwin_time_t)timeoutSec;
 
 /*!
  *  デバイスのファームウェア情報を取得する。取得した情報は、firmwareInformationプロパティに保存される。

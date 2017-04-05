@@ -30,6 +30,8 @@
 #import "StarIOPlugin.h"
 #import "StarIOPlugin_JS.h"
 #import "StarIOPlugin_Communication.h"
+#import "RasterDocument.h"
+#import "StarBitmap.h"
 
 @implementation StarIOPlugin
 
@@ -140,34 +142,42 @@ static NSString *dataCallbackId = nil;
 
         NSMutableArray *info = [[NSMutableArray alloc] init];
 
-        //TODO - run in background
-        if ([portType isEqualToString:@"All"] || [portType isEqualToString:@"Bluetooth"]) {
-            NSArray *btPortInfoArray = [SMPort searchPrinter:@"BT:"];
-            for (PortInfo *p in btPortInfoArray) {
-                [info addObject:[self portInfoToDictionary:p]];
-            }
-        }
+				//TODO - run in background
+				if ([portType isEqualToString:@"All"]) {
+					NSArray *allPortInfoArray = [SMPort searchPrinter];
+					for (PortInfo *p in allPortInfoArray) {
+							[info addObject:[self portInfoToDictionary:p]];
+					}
+				}
+				else {
+	        if ([portType isEqualToString:@"Bluetooth"]) {
+	            NSArray *btPortInfoArray = [SMPort searchPrinter:@"BT:"];
+	            for (PortInfo *p in btPortInfoArray) {
+	                [info addObject:[self portInfoToDictionary:p]];
+	            }
+	        }
 
-				if ([portType isEqualToString:@"All"] || [portType isEqualToString:@"BluetoothLE"]) {
-            NSArray *btPortInfoArray = [SMPort searchPrinter:@"BLE:"];
-            for (PortInfo *p in btPortInfoArray) {
-                [info addObject:[self portInfoToDictionary:p]];
-            }
-        }
+					if ([portType isEqualToString:@"BluetoothLE"]) {
+	            NSArray *btPortInfoArray = [SMPort searchPrinter:@"BLE:"];
+	            for (PortInfo *p in btPortInfoArray) {
+	                [info addObject:[self portInfoToDictionary:p]];
+	            }
+	        }
 
-        if ([portType isEqualToString:@"All"] || [portType isEqualToString:@"LAN"]) {
-            NSArray *lanPortInfoArray = [SMPort searchPrinter:@"LAN:"];
-            for (PortInfo *p in lanPortInfoArray) {
-                [info addObject:[self portInfoToDictionary:p]];
-            }
-        }
+	        if ([portType isEqualToString:@"LAN"]) {
+	            NSArray *lanPortInfoArray = [SMPort searchPrinter:@"TCP:"];
+	            for (PortInfo *p in lanPortInfoArray) {
+	                [info addObject:[self portInfoToDictionary:p]];
+	            }
+	        }
 
-        if ([portType isEqualToString:@"All"] || [portType isEqualToString:@"USB"]) {
-            NSArray *usbPortInfoArray = [SMPort searchPrinter:@"USB:"];
-            for (PortInfo *p in usbPortInfoArray) {
-                [info addObject:[self portInfoToDictionary:p]];
-            }
-        }
+	        if ([portType isEqualToString:@"USB"]) {
+	            NSArray *usbPortInfoArray = [SMPort searchPrinter:@"USB:"];
+	            for (PortInfo *p in usbPortInfoArray) {
+	                [info addObject:[self portInfoToDictionary:p]];
+	            }
+	        }
+				}
 
 
         CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:info];
@@ -203,6 +213,89 @@ static NSString *dataCallbackId = nil;
     [self.commandDelegate sendPluginResult:result callbackId:dataCallbackId];
 }
 
+
+
+
+
+- (void)printImage:(CDVInvokedUrlCommand *)command {
+    NSLog(@"printing image");
+    [self.commandDelegate runInBackground:^{
+        NSString *portName = nil;
+        NSString *base64 = nil;
+        int maxWidth = 0;
+        SMPort *port = nil;
+				BOOL releasePort = false;
+
+        if (command.arguments.count > 0) {
+            portName = [command.arguments objectAtIndex:0];
+            base64 = [command.arguments objectAtIndex:1];
+            maxWidth = 600;
+        }
+
+        if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
+            port = [SMPort getPort:portName :@"" :10000];
+						releasePort = true;
+        } else {
+            port = [_starIoExtManager port];
+        }
+
+        NSData* imageData = [[NSData alloc] initWithBase64EncodedString:base64 options:0];
+
+        UIImage* image = [UIImage imageWithData:imageData];
+
+        RasterDocument *rasterDoc = [[RasterDocument alloc] initWithDefaults:RasSpeed_Medium endOfPageBehaviour:RasPageEndMode_FeedAndFullCut endOfDocumentBahaviour:RasPageEndMode_FeedAndFullCut topMargin:RasTopMargin_Standard pageLength:0 leftMargin:0 rightMargin:0];
+
+        StarBitmap *starbitmap = [[StarBitmap alloc] initWithUIImage:image :maxWidth :false];
+
+        NSMutableData *commandsToPrint = [[NSMutableData alloc] init];
+
+        NSData *shortcommand = [rasterDoc BeginDocumentCommandData];
+
+        [commandsToPrint appendData:shortcommand];
+
+        shortcommand = [starbitmap getImageDataForPrinting:YES]; // try NO
+        [commandsToPrint appendData:shortcommand];
+
+        shortcommand = [rasterDoc EndDocumentCommandData];
+        [commandsToPrint appendData:shortcommand];
+
+        // [starbitmap release];
+        // [rasterDoc release];
+        // [image release];
+//        [imageData release];
+
+        if (_starIoExtManager != nil) {
+            [_starIoExtManager.lock lock];
+        }
+
+        BOOL printResult = false;
+
+				@try {
+					printResult = [StarIOPlugin_Communication sendCommands:commandsToPrint port:port];
+				}
+				@finally {
+		        if (port != nil && releasePort) {
+		            [SMPort releasePort:port];
+		        }
+		    }
+
+        // [commandsToPrint release];
+
+        if (_starIoExtManager != nil) {
+            [_starIoExtManager.lock unlock];
+        }
+
+        CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
+        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    }];
+}
+
+
+
+
+
+
+
 - (void)printReceipt:(CDVInvokedUrlCommand *)command {
     NSLog(@"printing receipt");
     [self.commandDelegate runInBackground:^{
@@ -210,6 +303,7 @@ static NSString *dataCallbackId = nil;
         NSString *portName = nil;
         NSString *content = nil;
         SMPort *port = nil;
+				BOOL releasePort = false;
 
         if (command.arguments.count > 0) {
             portName = [command.arguments objectAtIndex:0];
@@ -218,7 +312,9 @@ static NSString *dataCallbackId = nil;
 
         if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
             port = [SMPort getPort:portName :@"" :10000];
+						releasePort = true;
         } else {
+						NSLog(@"starIoExtManager != nil");
             port = [_starIoExtManager port];
         }
 
@@ -228,7 +324,16 @@ static NSString *dataCallbackId = nil;
             [_starIoExtManager.lock lock];
         }
 
-        BOOL printResult = [StarIOPlugin_Communication sendCommands:commands port:port];
+        BOOL printResult = false;
+
+				@try {
+					printResult = [StarIOPlugin_Communication sendCommands:commands port:port];
+				}
+				@finally {
+		        if (port != nil && releasePort) {
+		            [SMPort releasePort:port];
+		        }
+		    }
 
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock unlock];
@@ -245,6 +350,7 @@ static NSString *dataCallbackId = nil;
     [self.commandDelegate runInBackground:^{
         NSString *portName = nil;
         SMPort *port = nil;
+				BOOL releasePort = false;
 
         if (command.arguments.count > 0) {
             portName = [command.arguments objectAtIndex:0];
@@ -252,6 +358,7 @@ static NSString *dataCallbackId = nil;
 
         if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
             port = [SMPort getPort:portName :@"" :10000];
+						releasePort = true;
         } else {
             port = [_starIoExtManager port];
         }
@@ -264,7 +371,16 @@ static NSString *dataCallbackId = nil;
             [_starIoExtManager.lock lock];
         }
 
-        BOOL printResult = [StarIOPlugin_Communication sendCommands:commandData port:port];
+        BOOL printResult;
+
+				@try {
+					printResult = [StarIOPlugin_Communication sendCommands:commandData port:port];
+				}
+				@finally {
+		        if (port != nil && releasePort) {
+		            [SMPort releasePort:port];
+		        }
+		    }
 
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock unlock];
@@ -398,7 +514,6 @@ static NSString *dataCallbackId = nil;
     [dict setObject:[portInfo portName] forKey:@"portName"];
     [dict setObject:[portInfo macAddress] forKey:@"macAddress"];
     [dict setObject:[portInfo modelName] forKey:@"modelName"];
-    [dict setObject:[NSNumber numberWithBool:[portInfo isConnected]] forKey:@"isConnected"];
     return dict;
 }
 

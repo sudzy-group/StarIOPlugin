@@ -3,7 +3,7 @@
  *  @framework StarIOPort
  *
  *  @discussion Entry point to StarIO.
- *  @copyright 2015 Star Micronics Co., Ltd. All rights reserved.
+ *  @copyright 2016 Star Micronics Co., Ltd. All rights reserved.
  */
 
 #import <Foundation/Foundation.h>
@@ -35,7 +35,6 @@
 @property(retain, readonly) NSString *portName;
 @property(retain, readonly) NSString *macAddress;
 @property(retain, readonly) NSString *modelName;
-@property(readonly, getter=isConnected) BOOL connected;
 
 @end
 
@@ -66,7 +65,7 @@
 /*!
  *  Search printer on LAN or paired bluetooth device.
  *
- *  @param Identifies the interface type to search (ex. "TCP:", "BT:", "BT:xxx").
+ *  @param  target   the interface type to search (ex. "TCP:", "BT:", "BT:xxx").
  *
  *  @return List of printers that were found.
  */
@@ -98,7 +97,7 @@
  *  This function writes data to the device.
  *
  *  @param writeBuffer Pointer to a byte buffer containing the write data.
- *  @param offset      Amount of data that was already written.
+ *  @param offSet      Amount of data that was already written.
  *  @param size        Amount of data left to write.
  *
  *  @return Amount of data written.
@@ -110,9 +109,9 @@
 /*!
  *  This function reads data from the device.
  *
- *  @param readBuffer       Pointer to a byte buffer into which data is read.
- *  @param offSet           Size in bytes to read.
- *  @param sizeCommunicated Amount of data to be write to the buffer.
+ *  @param readBuffer   Pointer to a byte buffer into which data is read.
+ *  @param offSet       Size in bytes to read.
+ *  @param size         Amount of data to be write to the buffer.
  *
  *  @return Aount of data written to the buffer.
  *
@@ -196,4 +195,26 @@
 - (BOOL)connected;
 
 + (void)setMACAddressSourceBlock:(NSString *(^)(EAAccessory *accessory))macAddressSourceBlock;
+
+//
+// NSError was added to the argument of API.
+//
+
+- (u_int32_t)writePort:(u_int8_t const *)writeBuffer :(u_int32_t)offSet :(u_int32_t)size :(NSError **)error;
+
+- (u_int32_t)readPort:(u_int8_t *)readBuffer :(u_int32_t)offSet :(u_int32_t)size :(NSError **)error;
+
+- (SM_BOOLEAN)getParsedStatus:(void *)starPrinterStatus :(u_int32_t)level :(NSError **)error;
+
+- (NSDictionary *)getFirmwareInformation:(NSError **)error;
+
+- (NSDictionary *)getDipSwitchInformation:(NSError **)error;
+
+- (bool)getOnlineStatus:(NSError **)error __attribute__((unavailable("Not available. Please change to getOnlineStatusWithError:.")));
+- (SM_BOOLEAN)getOnlineStatusWithError:(NSError **)error;
+
+- (SM_BOOLEAN)beginCheckedBlock:(void *)starPrinterStatus :(u_int32_t)level :(NSError **)error;
+
+- (SM_BOOLEAN)endCheckedBlock:(void *)starPrinterStatus :(u_int32_t)level :(NSError **)error;
+
 @end
