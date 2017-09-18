@@ -2823,6 +2823,43 @@
     return commands;
 }
 
+
+
++ (void)PrintFullReceiptWithPortname:(NSString *)portName
+name:(NSString *)name
+address:(NSString *)address
+phone:(NSString *)phone
+date:(NSString *)date
+portSettings:(NSString *)portSettings 
+paperWidth:(SMPaperWidth)paperWidth 
+errorMessage:(NSMutableString *)message
+{
+   
+    NSMutableData *commands = [NSMutableData data];
+    
+    [commands appendBytes:"\x1d\x57\x80\x31"
+                   length:sizeof("\x1d\x57\x80\x31") - 1];    // Page Area Setting     <GS> <W> nL nH  (nL = 128, nH = 1)
+    
+    [commands appendBytes:"\x1b\x61\x01"
+                   length:sizeof("\x1b\x61\x01") - 1];    // Center Justification  <ESC> a n       (0 Left, 1 Center, 2 Right)
+
+    [commands appendData:[name dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[address dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[phone dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[date dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\nBarcode\n\n" dataUsingEncoding:NSASCIIStringEncoding]];
+
+    
+
+    [self sendCommand:commands portName:portName portSettings:portSettings timeoutMillis:10000 errorMessage:message];
+    
+    //[commands release];
+}
+
 #pragma mark Sample Receipt + Open Cash Drawer
 
 + (void)PrintSampleReceiptWithPortname:(NSString *)portName portSettings:(NSString *)portSettings paperWidth:(SMPaperWidth)paperWidth errorMessage:(NSMutableString *)message
@@ -2833,28 +2870,19 @@
                                                     delegate:nil
                                            cancelButtonTitle:@"OK"
                                            otherButtonTitles:nil];
-    NSData *commands = nil;
+    NSMutableData *commands = [NSMutableData data];
     
-    switch (paperWidth) {
-        case SMPaperWidth2inch:
-            commands = [self english2inchSampleReceipt];
-            break;
-            
-        case SMPaperWidth3inch:
-
-            //[alert1 show];
-
-            commands = [self english3inchSampleReceipt];
-            break;
-            
-        case SMPaperWidth4inch:
-            commands = [self english4inchSampleReceipt];
-            break;
-            
-        default:
-            return;
-    }
+    [commands appendBytes:"\x1d\x57\x80\x31"
+                   length:sizeof("\x1d\x57\x80\x31") - 1];    // Page Area Setting     <GS> <W> nL nH  (nL = 128, nH = 1)
     
+    [commands appendBytes:"\x1b\x61\x01"
+                   length:sizeof("\x1b\x61\x01") - 1];    // Center Justification  <ESC> a n       (0 Left, 1 Center, 2 Right)
+    
+    [commands appendData:[@"Cust\n"
+                          "Name\n"
+                          "City, State 12345\n\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    
+
     [self sendCommand:commands portName:portName portSettings:portSettings timeoutMillis:10000 errorMessage:message];
     
     //[commands release];

@@ -110,6 +110,9 @@ typedef enum {
          TextToPrint:(unsigned char *)textToPrint
      TextToPrintSize:(unsigned int)textToPrintSize;
 
+
+
+
 + (void)printSampleReceiptWithPortname:(NSString *)portName
                           portSettings:(NSString *)portSettings
                             paperWidth:(SMPaperWidth)paperWidth
@@ -120,6 +123,15 @@ typedef enum {
 
 - (void)MCRStartWithPortName:(NSString*)portName
                 portSettings:(NSString*)portSettings;
+
++ (void)PrintFullReceiptWithPortname:(NSString *)portName
+                        name:(NSString *)name
+                        address:(NSString *)address
+                        phone:(NSString *)phone
+                        date:(NSString *)date
+                        portSettings:(NSString *)portSettings
+                          paperWidth:(SMPaperWidth)printableWidth
+                        errorMessage:(NSMutableString *)message;
 
 + (void)PrintSampleReceiptWithPortname:(NSString *)portName
                           portSettings:(NSString *)portSettings

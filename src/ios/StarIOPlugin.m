@@ -40,57 +40,57 @@ static NSString *dataCallbackId = nil;
 
 - (void)init:(CDVInvokedUrlCommand *)command
 {
-	NSLog(@"init called from %@!", [self class]);
-
-	if (self.hasPendingOperation) {
-		//        [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
-		NSLog(@"%@.hasPendingOperation = YES", [self class]);
-	} else {
-		//        [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
-		NSLog(@"%@.hasPendingOperation = NO", [self class]);
-	}
-
-	NSString	*systemVersion		= [[UIDevice currentDevice] systemVersion];
-	BOOL		isLessThaniOS4		= ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedAscending);
-	BOOL		isGreaterThaniOS4	= ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedDescending);
-	BOOL		isLessThaniOS5		= ([systemVersion compare:@"5.0" options:NSNumericSearch] == NSOrderedAscending);
-	BOOL		isGreaterThaniOS5	= ([systemVersion compare:@"5.0" options:NSNumericSearch] == NSOrderedDescending);
-	BOOL		isLessThaniOS6		= ([systemVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedAscending);
-	BOOL		isEqualToiOS6		= ([systemVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedSame);
-	BOOL		isGreaterThaniOS6	= ([systemVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedDescending);
-
-	if (isLessThaniOS4 && isLessThaniOS5) {}
-
-	if (isGreaterThaniOS4 && isLessThaniOS5) {}
-
-	if (isGreaterThaniOS5 && isLessThaniOS6) {}
-
-	if (isEqualToiOS6) {
-		NSLog(@"isEqualToiOS6");
-	}
-
-	if (isGreaterThaniOS6) {
-		NSLog(@"isGreaterThaniOS6");
-	}
-
-	NSString	*callbackId		= [command.arguments objectAtIndex:0];
-	NSString	*objectAtIndex0 = [command.arguments objectAtIndex:0];
-
-	CDVViewController	*mvcCDVPlugin = (CDVViewController *)[super viewController];
-	CDVPluginResult		*result;
-
-	// [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
-
+    NSLog(@"init called from %@!", [self class]);
+    
+    if (self.hasPendingOperation) {
+        //        [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
+        NSLog(@"%@.hasPendingOperation = YES", [self class]);
+    } else {
+        //        [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
+        NSLog(@"%@.hasPendingOperation = NO", [self class]);
+    }
+    
+    NSString    *systemVersion      = [[UIDevice currentDevice] systemVersion];
+    BOOL        isLessThaniOS4      = ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedAscending);
+    BOOL        isGreaterThaniOS4   = ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedDescending);
+    BOOL        isLessThaniOS5      = ([systemVersion compare:@"5.0" options:NSNumericSearch] == NSOrderedAscending);
+    BOOL        isGreaterThaniOS5   = ([systemVersion compare:@"5.0" options:NSNumericSearch] == NSOrderedDescending);
+    BOOL        isLessThaniOS6      = ([systemVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedAscending);
+    BOOL        isEqualToiOS6       = ([systemVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedSame);
+    BOOL        isGreaterThaniOS6   = ([systemVersion compare:@"6.0" options:NSNumericSearch] == NSOrderedDescending);
+    
+    if (isLessThaniOS4 && isLessThaniOS5) {}
+    
+    if (isGreaterThaniOS4 && isLessThaniOS5) {}
+    
+    if (isGreaterThaniOS5 && isLessThaniOS6) {}
+    
+    if (isEqualToiOS6) {
+        NSLog(@"isEqualToiOS6");
+    }
+    
+    if (isGreaterThaniOS6) {
+        NSLog(@"isGreaterThaniOS6");
+    }
+    
+    NSString    *callbackId     = [command.arguments objectAtIndex:0];
+    NSString    *objectAtIndex0 = [command.arguments objectAtIndex:0];
+    
+    CDVViewController   *mvcCDVPlugin = (CDVViewController *)[super viewController];
+    CDVPluginResult     *result;
+    
+    // [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
+    
     _starIoExtManager = nil;
-
-	if ([objectAtIndex0 isEqualToString:@"success"]) {
-		NSString *jsString = kCDVPluginINIT;
+    
+    if ([objectAtIndex0 isEqualToString:@"success"]) {
+        NSString *jsString = kCDVPluginINIT;
         [mvcCDVPlugin.webViewEngine evaluateJavaScript:jsString completionHandler:^(id id, NSError * error) {
             NSLog(@"Initialized StarIOPlugin and notified webViewEngine");
         }];
-		result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Success! const kCDVPluginINIT was evaluated by webview!"];
+        result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Success! const kCDVPluginINIT was evaluated by webview!"];
         [self.commandDelegate sendPluginResult:result callbackId:callbackId];
-	} else {NSLog(@"[command.arguments objectAtIndex:0] = %@", [command.arguments objectAtIndex:0]); }
+    } else {NSLog(@"[command.arguments objectAtIndex:0] = %@", [command.arguments objectAtIndex:0]); }
 }
 
 
@@ -99,10 +99,10 @@ static NSString *dataCallbackId = nil;
     NSLog(@"Checking status");
     [self.commandDelegate runInBackground:^{
         NSString *portName = nil;
-        CDVPluginResult	*result = nil;
+        CDVPluginResult *result = nil;
         StarPrinterStatus_2 status;
         SMPort *port = nil;
-
+        
         if (command.arguments.count > 0) {
             portName = [command.arguments objectAtIndex:0];
         }
@@ -126,7 +126,7 @@ static NSString *dataCallbackId = nil;
                 [SMPort releasePort:port];
             }
         }
-
+        
         NSLog(@"Sending status result");
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
@@ -136,53 +136,53 @@ static NSString *dataCallbackId = nil;
     NSLog(@"Finding ports");
     [self.commandDelegate runInBackground:^{
         NSString *portType = @"All";
-
+        
         if (command.arguments.count > 0) {
             portType = [command.arguments objectAtIndex:0];
         }
-
+        
         NSMutableArray *info = [[NSMutableArray alloc] init];
-
-				//TODO - run in background
-				if ([portType isEqualToString:@"All"]) {
-					NSArray *allPortInfoArray = [SMPort searchPrinter];
-					for (PortInfo *p in allPortInfoArray) {
-							[info addObject:[self portInfoToDictionary:p]];
-					}
-				}
-				else {
-	        if ([portType isEqualToString:@"Bluetooth"]) {
-	            NSArray *btPortInfoArray = [SMPort searchPrinter:@"BT:"];
-	            for (PortInfo *p in btPortInfoArray) {
-	                [info addObject:[self portInfoToDictionary:p]];
-	            }
-	        }
-
-					if ([portType isEqualToString:@"BluetoothLE"]) {
-	            NSArray *btPortInfoArray = [SMPort searchPrinter:@"BLE:"];
-	            for (PortInfo *p in btPortInfoArray) {
-	                [info addObject:[self portInfoToDictionary:p]];
-	            }
-	        }
-
-	        if ([portType isEqualToString:@"LAN"]) {
-	            NSArray *lanPortInfoArray = [SMPort searchPrinter:@"TCP:"];
-	            for (PortInfo *p in lanPortInfoArray) {
-	                [info addObject:[self portInfoToDictionary:p]];
-	            }
-	        }
-
-	        if ([portType isEqualToString:@"USB"]) {
-	            NSArray *usbPortInfoArray = [SMPort searchPrinter:@"USB:"];
-	            for (PortInfo *p in usbPortInfoArray) {
-	                [info addObject:[self portInfoToDictionary:p]];
-	            }
-	        }
-				}
-
-
-        CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:info];
-
+        
+        //TODO - run in background
+        if ([portType isEqualToString:@"All"]) {
+            NSArray *allPortInfoArray = [SMPort searchPrinter];
+            for (PortInfo *p in allPortInfoArray) {
+                [info addObject:[self portInfoToDictionary:p]];
+            }
+        }
+        else {
+            if ([portType isEqualToString:@"Bluetooth"]) {
+                NSArray *btPortInfoArray = [SMPort searchPrinter:@"BT:"];
+                for (PortInfo *p in btPortInfoArray) {
+                    [info addObject:[self portInfoToDictionary:p]];
+                }
+            }
+            
+            if ([portType isEqualToString:@"BluetoothLE"]) {
+                NSArray *btPortInfoArray = [SMPort searchPrinter:@"BLE:"];
+                for (PortInfo *p in btPortInfoArray) {
+                    [info addObject:[self portInfoToDictionary:p]];
+                }
+            }
+            
+            if ([portType isEqualToString:@"LAN"]) {
+                NSArray *lanPortInfoArray = [SMPort searchPrinter:@"TCP:"];
+                for (PortInfo *p in lanPortInfoArray) {
+                    [info addObject:[self portInfoToDictionary:p]];
+                }
+            }
+            
+            if ([portType isEqualToString:@"USB"]) {
+                NSArray *usbPortInfoArray = [SMPort searchPrinter:@"USB:"];
+                for (PortInfo *p in usbPortInfoArray) {
+                    [info addObject:[self portInfoToDictionary:p]];
+                }
+            }
+        }
+        
+        
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:info];
+        
         NSLog(@"Sending ports result");
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
@@ -190,26 +190,26 @@ static NSString *dataCallbackId = nil;
 
 - (void)connect:(CDVInvokedUrlCommand *)command {
     NSString *portName = nil;
-
+    
     if (command.arguments.count > 0) {
         portName = [command.arguments objectAtIndex:0];
     }
-
+    
     if (_starIoExtManager == nil) {
         _starIoExtManager = [[StarIoExtManager alloc] initWithType:StarIoExtManagerTypeWithBarcodeReader
                                                           portName:portName
                                                       portSettings:@""
                                                    ioTimeoutMillis:10000];
-
+        
         _starIoExtManager.delegate = self;
     }
-
+    
     if (_starIoExtManager.port != nil) {
         [_starIoExtManager disconnect];
     }
-
+    
     dataCallbackId = command.callbackId;
-    CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[_starIoExtManager connect]];
+    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[_starIoExtManager connect]];
     [result setKeepCallbackAsBool:YES];
     [self.commandDelegate sendPluginResult:result callbackId:dataCallbackId];
 }
@@ -225,68 +225,68 @@ static NSString *dataCallbackId = nil;
         NSString *base64 = nil;
         int maxWidth = 0;
         SMPort *port = nil;
-				BOOL releasePort = false;
-
+        BOOL releasePort = false;
+        
         if (command.arguments.count > 0) {
             portName = [command.arguments objectAtIndex:0];
             base64 = [command.arguments objectAtIndex:1];
             maxWidth = 600;
         }
-
+        
         if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
             port = [SMPort getPort:portName :@"" :10000];
-						releasePort = true;
+            releasePort = true;
         } else {
             port = [_starIoExtManager port];
         }
-
+        
         NSData* imageData = [[NSData alloc] initWithBase64EncodedString:base64 options:0];
-
+        
         UIImage* image = [UIImage imageWithData:imageData];
-
+        
         RasterDocument *rasterDoc = [[RasterDocument alloc] initWithDefaults:RasSpeed_Medium endOfPageBehaviour:RasPageEndMode_FeedAndFullCut endOfDocumentBahaviour:RasPageEndMode_FeedAndFullCut topMargin:RasTopMargin_Standard pageLength:0 leftMargin:0 rightMargin:0];
-
+        
         StarBitmap *starbitmap = [[StarBitmap alloc] initWithUIImage:image :maxWidth :false];
-
+        
         NSMutableData *commandsToPrint = [[NSMutableData alloc] init];
-
+        
         NSData *shortcommand = [rasterDoc BeginDocumentCommandData];
-
+        
         [commandsToPrint appendData:shortcommand];
-
+        
         shortcommand = [starbitmap getImageDataForPrinting:YES]; // try NO
         [commandsToPrint appendData:shortcommand];
-
+        
         shortcommand = [rasterDoc EndDocumentCommandData];
         [commandsToPrint appendData:shortcommand];
-
+        
         // [starbitmap release];
         // [rasterDoc release];
         // [image release];
-//        [imageData release];
-
+        //        [imageData release];
+        
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock lock];
         }
-
+        
         BOOL printResult = false;
-
-				@try {
-					printResult = [StarIOPlugin_Communication sendCommands:commandsToPrint port:port];
-				}
-				@finally {
-		        if (port != nil && releasePort) {
-		            [SMPort releasePort:port];
-		        }
-		    }
-
+        
+        @try {
+            printResult = [StarIOPlugin_Communication sendCommands:commandsToPrint port:port];
+        }
+        @finally {
+            if (port != nil && releasePort) {
+                [SMPort releasePort:port];
+            }
+        }
+        
         // [commandsToPrint release];
-
+        
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock unlock];
         }
-
-        CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
+        
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
@@ -304,43 +304,43 @@ static NSString *dataCallbackId = nil;
         NSString *portName = nil;
         NSString *content = nil;
         SMPort *port = nil;
-				BOOL releasePort = false;
-
+        BOOL releasePort = false;
+        
         if (command.arguments.count > 0) {
             portName = [command.arguments objectAtIndex:0];
             content = [command.arguments objectAtIndex:1];
         }
-
+        
         if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
             port = [SMPort getPort:portName :@"" :10000];
-						releasePort = true;
+            releasePort = true;
         } else {
-						NSLog(@"starIoExtManager != nil");
+            NSLog(@"starIoExtManager != nil");
             port = [_starIoExtManager port];
         }
-
+        
         [commands appendData:[content dataUsingEncoding:NSASCIIStringEncoding]];
-
+        
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock lock];
         }
-
+        
         BOOL printResult = false;
-
-				@try {
-					printResult = [StarIOPlugin_Communication sendCommands:commands port:port];
-				}
-				@finally {
-		        if (port != nil && releasePort) {
-		            [SMPort releasePort:port];
-		        }
-		    }
-
+        
+        @try {
+            printResult = [StarIOPlugin_Communication sendCommands:commands port:port];
+        }
+        @finally {
+            if (port != nil && releasePort) {
+                [SMPort releasePort:port];
+            }
+        }
+        
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock unlock];
         }
-
-        CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
+        
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
 }
@@ -348,15 +348,29 @@ static NSString *dataCallbackId = nil;
 
 - (void)printMobile: (CDVInvokedUrlCommand*)command
 {
-    CDVPluginResult* pluginResult = nil;
+    NSString *name = nil;
+    NSString *address = nil;
+    NSString *phone = nil;
+    NSString *date = nil;
+    if (command.arguments.count > 0) {
+        name = [command.arguments objectAtIndex:0];
+        address = [command.arguments objectAtIndex:1];
+        phone =[command.arguments objectAtIndex:2];
+        date = [command.arguments objectAtIndex:3];
+    }
+       CDVPluginResult* pluginResult = nil;
     
     NSMutableString* message = [NSMutableString stringWithString:@""];
     
     
-    [MiniPrinterFunctions PrintSampleReceiptWithPortname:@"BT:PRNT Star"
-                                            portSettings:@"Portable;escpos"
-                                              paperWidth:2
-                                            errorMessage:message];
+    [MiniPrinterFunctions PrintFullReceiptWithPortname:@"BT:PRNT Star"
+                                                  name: name
+                                               address:address
+                                                 phone: phone
+                                                  date: date
+                                          portSettings:@"Portable;escpos"
+                                            paperWidth:2
+                                          errorMessage:message];
     NSUInteger length = [message length];
     
     if (length == 0) {
@@ -369,50 +383,50 @@ static NSString *dataCallbackId = nil;
 
 -(void)openCashDrawer:(CDVInvokedUrlCommand *)command {
     NSLog(@"opening cash drawer");
-
+    
     [self.commandDelegate runInBackground:^{
         NSString *portName = nil;
         SMPort *port = nil;
-				BOOL releasePort = false;
-
+        BOOL releasePort = false;
+        
         if (command.arguments.count > 0) {
             portName = [command.arguments objectAtIndex:0];
         }
-
+        
         if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
             port = [SMPort getPort:portName :@"" :10000];
-						releasePort = true;
+            releasePort = true;
         } else {
             port = [_starIoExtManager port];
         }
-
+        
         unsigned char openCashDrawerCommand = 0x07;
-
+        
         NSData *commandData = [NSData dataWithBytes:&openCashDrawerCommand length:1];
-
+        
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock lock];
         }
-
+        
         BOOL printResult;
-
-				@try {
-					printResult = [StarIOPlugin_Communication sendCommands:commandData port:port];
-				}
-				@finally {
-		        if (port != nil && releasePort) {
-		            [SMPort releasePort:port];
-		        }
-		    }
-
+        
+        @try {
+            printResult = [StarIOPlugin_Communication sendCommands:commandData port:port];
+        }
+        @finally {
+            if (port != nil && releasePort) {
+                [SMPort releasePort:port];
+            }
+        }
+        
         if (_starIoExtManager != nil) {
             [_starIoExtManager.lock unlock];
         }
-
-        CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
+        
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
-
+    
 }
 
 //Printer events
@@ -465,22 +479,22 @@ static NSString *dataCallbackId = nil;
 
 -(void)didBarcodeDataReceive:(NSData *)data {
     NSLog(@"barcodeDataReceive");
-
+    
     NSMutableString *text = [NSMutableString stringWithString:@""];
-
+    
     const uint8_t *p = [data bytes];
-
+    
     for (int i = 0; i < data.length; i++) {
         uint8_t ch = *(p + i);
-
+        
         if(ch >= 0x20 && ch <= 0x7f) {
             [text appendFormat:@"%c", (char) ch];
         }
         else if (ch == 0x0d) { //carriage return
-//            text = [NSMutableString stringWithString:@""];
+            //            text = [NSMutableString stringWithString:@""];
         }
     }
-
+    
     [self sendData:@"barcodeDataReceive" data:text];
 }
 
@@ -501,12 +515,12 @@ static NSString *dataCallbackId = nil;
 
 - (void)handleOpenURL:(NSNotification *)notification
 {
-	NSLog(@"%@ handleOpenURL!", [self class]);
+    NSLog(@"%@ handleOpenURL!", [self class]);
 }
 
 - (void)onAppTerminate
 {
-	NSLog(@"%@ onAppTerminate!", [self class]);
+    NSLog(@"%@ onAppTerminate!", [self class]);
     if (_starIoExtManager != nil && _starIoExtManager.port != nil) {
         [_starIoExtManager disconnect];
     }
@@ -514,17 +528,17 @@ static NSString *dataCallbackId = nil;
 
 - (void)onMemoryWarning
 {
-	NSLog(@"%@ onMemoryWarning!", [self class]);
+    NSLog(@"%@ onMemoryWarning!", [self class]);
 }
 
 - (void)onReset
 {
-	NSLog(@"%@ onReset!", [self class]);
+    NSLog(@"%@ onReset!", [self class]);
 }
 
 - (void)dispose
 {
-	NSLog(@"%@ dispose!", [self class]);
+    NSLog(@"%@ dispose!", [self class]);
     if (_starIoExtManager != nil && _starIoExtManager.port != nil) {
         [_starIoExtManager disconnect];
     }
@@ -557,7 +571,7 @@ static NSString *dataCallbackId = nil;
         if (data != nil) {
             [dict setObject:data forKey:@"data"];
         }
-        CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict];
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:dict];
         [result setKeepCallbackAsBool:YES];
         [self.commandDelegate sendPluginResult:result callbackId:dataCallbackId];
     }

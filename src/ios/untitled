@@ -1,0 +1,45 @@
++ (void)PrintSampleReceiptWithPortname:(NSString *)portName name:(NSString *)name portSettings:(NSString *)portSettings paperWidth:(SMPaperWidth)paperWidth name:(NSString *)name phone:(NSString *)phone address:(NSString *)address date:(NSString *)date errorMessage:(NSMutableString *)message
+{
+ NSLog(@"name", [name])
+    UIAlertView *alert1 = [[UIAlertView alloc] initWithTitle:@"SMPaperWidth3inch"
+                                                     message:@""
+                                                    delegate:nil
+                                           cancelButtonTitle:@"OK"
+                                           otherButtonTitles:nil];
+    // NSData *commands = nil;
+    NSMutableData *commands = [NSMutableData data];
+    
+    [commands appendBytes:"\x1d\x57\x80\x31"
+                   length:sizeof("\x1d\x57\x80\x31") - 1];    // Page Area Setting     <GS> <W> nL nH  (nL = 128, nH = 1)
+    
+    [commands appendBytes:"\x1b\x61\x01"
+                   length:sizeof("\x1b\x61\x01") - 1];    // Center Justification  <ESC> a n       (0 Left, 1 Center, 2 Right)
+    
+    [commands appendData:[@"CUSTOMER\n"
+                          name"\n"
+                          "City, State 12345\n\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    
+    // switch (paperWidth) {
+    //     case SMPaperWidth2inch:
+    //         commands = [self english2inchSampleReceipt];
+    //         break;
+            
+    //     case SMPaperWidth3inch:
+
+    //         //[alert1 show];
+
+    //         commands = [self english3inchSampleReceipt];
+    //         break;
+            
+    //     case SMPaperWidth4inch:
+    //         commands = [self english4inchSampleReceipt];
+    //         break;
+            
+    //     default:
+    //         return;
+    // }
+    
+    [self sendCommand:commands portName:portName portSettings:portSettings timeoutMillis:10000 errorMessage:message];
+    
+    //[commands release];
+}
