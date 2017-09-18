@@ -31,6 +31,7 @@
 #import "StarIOPlugin_JS.h"
 #import "StarIOPlugin_Communication.h"
 #import "RasterDocument.h"
+#import "MiniPrinterFunctions.h"
 #import "StarBitmap.h"
 
 @implementation StarIOPlugin
@@ -342,6 +343,28 @@ static NSString *dataCallbackId = nil;
         CDVPluginResult	*result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
         [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
     }];
+}
+
+
+- (void)printMobile: (CDVInvokedUrlCommand*)command
+{
+    CDVPluginResult* pluginResult = nil;
+    
+    NSMutableString* message = [NSMutableString stringWithString:@""];
+    
+    
+    [MiniPrinterFunctions PrintSampleReceiptWithPortname:@"BT:PRNT Star"
+                                            portSettings:@"Portable;escpos"
+                                              paperWidth:2
+                                            errorMessage:message];
+    NSUInteger length = [message length];
+    
+    if (length == 0) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:message];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 -(void)openCashDrawer:(CDVInvokedUrlCommand *)command {
