@@ -26,15 +26,6 @@ module.exports = {
                 callback(error)
             }, 'StarIOPlugin', 'portDiscovery', [type]);
     },
-    // printTestMobile: function(id, callback){
-    //        exec(function (result) {
-    //             callback(null, result)
-    //         },
-    //         function (error) {
-    //             callback(error)
-    //         }, 'StarIOPlugin', 'printTestMobile', [id]);
-
-    // },
     printMobile: function(name, address, phone, date, callback){
            exec(function (result) {
                 callback(null, result)
