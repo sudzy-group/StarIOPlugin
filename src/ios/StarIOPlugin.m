@@ -352,13 +352,11 @@ static NSString *dataCallbackId = nil;
     NSString *address = nil;
     NSString *phone = nil;
     NSString *date = nil;
-    NSString *barcode = nil;
     if (command.arguments.count > 0) {
         name = [command.arguments objectAtIndex:0];
         address = [command.arguments objectAtIndex:1];
         phone =[command.arguments objectAtIndex:2];
         date = [command.arguments objectAtIndex:3];
-        barcode = [command.arguments objectAtIndex:4];
     }
        CDVPluginResult* pluginResult = nil;
     
@@ -370,7 +368,6 @@ static NSString *dataCallbackId = nil;
                                                address:address
                                                  phone: phone
                                                   date: date
-                                                  barcode: barcode
                                           portSettings:@"Portable;escpos"
                                             paperWidth:2
                                           errorMessage:message];

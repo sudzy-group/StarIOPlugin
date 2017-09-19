@@ -129,7 +129,6 @@ typedef enum {
                         address:(NSString *)address
                         phone:(NSString *)phone
                         date:(NSString *)date
-                        barcode:(NSString *)barcode
                         portSettings:(NSString *)portSettings
                           paperWidth:(SMPaperWidth)printableWidth
                         errorMessage:(NSMutableString *)message;

@@ -2830,7 +2830,6 @@ name:(NSString *)name
 address:(NSString *)address
 phone:(NSString *)phone
 date:(NSString *)date
-barcode:(NSString *)barcode
 portSettings:(NSString *)portSettings 
 paperWidth:(SMPaperWidth)paperWidth 
 errorMessage:(NSMutableString *)message
@@ -2853,8 +2852,6 @@ errorMessage:(NSMutableString *)message
     [commands appendData:[phone dataUsingEncoding:NSASCIIStringEncoding]];
     [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
     [commands appendData:[date dataUsingEncoding:NSASCIIStringEncoding]];
-    [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
-    [commands appendData:[barcode dataUsingEncoding:NSASCIIStringEncoding]];
     [commands appendData:[@"\n\n" dataUsingEncoding:NSASCIIStringEncoding]];
     
 
