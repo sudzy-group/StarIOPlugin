@@ -26,13 +26,13 @@ module.exports = {
                 callback(error)
             }, 'StarIOPlugin', 'portDiscovery', [type]);
     },
-    printMobile: function(name, address, phone, date, callback){
+    printMobile: function(name, address, phone, date, barcode, callback){
            exec(function (result) {
                 callback(null, result)
             },
             function (error) {
                 callback(error)
-            }, 'StarIOPlugin', 'printMobile', [name, address, phone, date]);
+            }, 'StarIOPlugin', 'printMobile', [name, address, phone, date, barcode]);
 
     },
     printReceipt: function (port, receipt, callback) {

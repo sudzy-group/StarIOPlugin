@@ -2830,10 +2830,13 @@ name:(NSString *)name
 address:(NSString *)address
 phone:(NSString *)phone
 date:(NSString *)date
+barcode:(NSString *)barcode
 portSettings:(NSString *)portSettings 
 paperWidth:(SMPaperWidth)paperWidth 
 errorMessage:(NSMutableString *)message
 {
+    NSLog(@"barcode?");
+    NSLog(barcode);
    
     NSMutableData *commands = [NSMutableData data];
     
@@ -2851,8 +2854,8 @@ errorMessage:(NSMutableString *)message
     [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
     [commands appendData:[date dataUsingEncoding:NSASCIIStringEncoding]];
     [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
-    [commands appendData:[@"\nBarcode\n\n" dataUsingEncoding:NSASCIIStringEncoding]];
-
+    [commands appendData:[barcode dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
     
 
     [self sendCommand:commands portName:portName portSettings:portSettings timeoutMillis:10000 errorMessage:message];
