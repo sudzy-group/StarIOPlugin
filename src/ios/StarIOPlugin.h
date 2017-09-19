@@ -38,6 +38,7 @@
 #import <Cordova/CDVPlugin.h>
 #import <StarIO/SMPort.h>
 #import <StarIO_Extension/StarIoExtManager.h>
+#import "MiniPrinterFunctions.h"
 
 @interface StarIOPlugin : CDVPlugin <StarIoExtManagerDelegate> {}
 
@@ -48,5 +49,6 @@
 - (void)checkStatus:(CDVInvokedUrlCommand *)command;
 - (void)connect:(CDVInvokedUrlCommand *)command;
 - (void)printReceipt:(CDVInvokedUrlCommand *)command;
+- (void)printMobile: (CDVInvokedUrlCommand*)command;
 - (void)printImage:(CDVInvokedUrlCommand *)command;
 @end

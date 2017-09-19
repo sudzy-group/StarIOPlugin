@@ -51,6 +51,11 @@
     <source-file src="src/ios/StarIOPlugin_JS.m" />
     <source-file src="src/ios/StarIOPlugin_Communication.h" />
     <source-file src="src/ios/StarIOPlugin_Communication.m" />
+    <source-file src="src/ios/CommonEnum.h" />
+    <source-file src="src/ios/MiniPrinterFunctions.h" />
+    <source-file src="src/ios/MiniPrinterFunctions.m" />
+    <source-file src="src/ios/PrinterFunctions.h" />
+    <source-file src="src/ios/PrinterFunctions.m" />
     <framework src="CoreBluetooth.framework" />
     <framework src="ExternalAccessory.framework" />
     <config-file target="*-Info.plist" parent="UISupportedExternalAccessoryProtocols">
