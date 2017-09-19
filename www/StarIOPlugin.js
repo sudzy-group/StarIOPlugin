@@ -9,6 +9,14 @@ module.exports = {
                 callback(error)
             }, 'StarIOPlugin', 'checkStatus', [port]);
     },
+    checkStatus: function (port, callback) {
+        exec(function (result) {
+                callback(null, result)
+            },
+            function (error) {
+                callback(error)
+            }, 'StarIOPlugin', 'checkStatus', [port]);
+    },
     portDiscovery: function (type, callback) {
         type = type || 'All';
         exec(function (result) {
@@ -17,6 +25,15 @@ module.exports = {
             function (error) {
                 callback(error)
             }, 'StarIOPlugin', 'portDiscovery', [type]);
+    },
+    printMobile: function(name, address, phone, date, callback){
+           exec(function (result) {
+                callback(null, result)
+            },
+            function (error) {
+                callback(error)
+            }, 'StarIOPlugin', 'printMobile', [name, address, phone, date]);
+
     },
     printReceipt: function (port, receipt, callback) {
         exec(function (result) {
