@@ -2850,7 +2850,8 @@ errorMessage:(NSMutableString *)message
     [commands appendData:[phone dataUsingEncoding:NSASCIIStringEncoding]];
     [commands appendData:[@"\n" dataUsingEncoding:NSASCIIStringEncoding]];
     [commands appendData:[date dataUsingEncoding:NSASCIIStringEncoding]];
-    [commands appendData:[@"\n\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\n...........\n" dataUsingEncoding:NSASCIIStringEncoding]];
+    [commands appendData:[@"\n...........\n" dataUsingEncoding:NSASCIIStringEncoding]];
     
 
     [self sendCommand:commands portName:portName portSettings:portSettings timeoutMillis:10000 errorMessage:message];
