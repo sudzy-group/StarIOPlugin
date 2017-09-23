@@ -49,6 +49,14 @@ public class StarIOPlugin extends CordovaPlugin {
             String port = args.getString(0);
             this.portDiscovery(port, callbackContext);
             return true;
+        } else if (action.equals("printMobile") ) {
+            String name = args.getString(0);
+            String address = args.getString(1);
+            String phone = args.getString(2);
+            String date = args.getString(3);
+            String portName = "BT:Star Micronics";
+            String portSettings = "mini";
+            return this.printMobile(name, address, phone, date, portName, portSettings, callbackContext);
         }else {
             String portName = args.getString(0);
             String portSettings = getPortSettingsOption(portName);
@@ -223,6 +231,31 @@ public class StarIOPlugin extends CordovaPlugin {
         return portSettings;
     }
 
+      private boolean printMobile(String name, String address, String phone, String date, String portName, String portSettings, CallbackContext callbackContext) throws JSONException {
+
+        Context context = this.cordova.getActivity();
+
+
+        ArrayList<byte[]> list = new ArrayList<byte[]>();
+        byte[] outputByteBuffer = null;
+        list.add(new byte[] { 0x1d, 0x57, (byte) 0x80, 0x31 }); // Page Area
+                                                                            
+        list.add(new byte[] { 0x1b, 0x61, 0x01 }); // Center Justification
+                                                                // <ESC> a n (0 Left, 1
+                                                                // Center, 2 Right)
+        list.add(name.getBytes());
+        list.add("\n".getBytes());
+        list.add(address.getBytes());
+        list.add("\n".getBytes());
+        list.add(phone.getBytes());
+        list.add("\n".getBytes());
+        list.add(date.getBytes());
+        list.add("\n-----\n".getBytes());
+        list.add("\n-----\n".getBytes());
+       
+        return sendCommand(context, portName, portSettings, list, callbackContext);
+    }
+
 
     private boolean printReceipt(String portName, String portSettings, String receipt, CallbackContext callbackContext) throws JSONException {
 
@@ -235,36 +268,36 @@ public class StarIOPlugin extends CordovaPlugin {
         list.add(new byte[] { 0x1b, 0x64, 0x02 }); // Cut
         list.add(new byte[]{0x07}); // Kick cash drawer
 
-        return sendCommand(context, portName, portSettings, list);
+        return sendCommand(context, portName, portSettings, list, callbackContext);
     }
 
-    private boolean sendCommand(Context context, String portName, String portSettings, ArrayList<byte[]> byteList) {
+    private boolean sendCommand(Context context, String portName, String portSettings, ArrayList<byte[]> byteList, CallbackContext callbackContext) {
         StarIOPort port = null;
         try {
-			/*
-			 * using StarIOPort3.1.jar (support USB Port) Android OS Version: upper 2.2
-			 */
+            /*
+             * using StarIOPort3.1.jar (support USB Port) Android OS Version: upper 2.2
+             */
             port = StarIOPort.getPort(portName, portSettings, 10000, context);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
             }
 
-			/*
-			 * Using Begin / End Checked Block method When sending large amounts of raster data,
-			 * adjust the value in the timeout in the "StarIOPort.getPort" in order to prevent
-			 * "timeout" of the "endCheckedBlock method" while a printing.
-			 *
-			 * If receipt print is success but timeout error occurs(Show message which is "There
-			 * was no response of the printer within the timeout period." ), need to change value
-			 * of timeout more longer in "StarIOPort.getPort" method.
-			 * (e.g.) 10000 -> 30000
-			 */
+            /*
+             * Using Begin / End Checked Block method When sending large amounts of raster data,
+             * adjust the value in the timeout in the "StarIOPort.getPort" in order to prevent
+             * "timeout" of the "endCheckedBlock method" while a printing.
+             *
+             * If receipt print is success but timeout error occurs(Show message which is "There
+             * was no response of the printer within the timeout period." ), need to change value
+             * of timeout more longer in "StarIOPort.getPort" method.
+             * (e.g.) 10000 -> 30000
+             */
             StarPrinterStatus status = port.beginCheckedBlock();
 
             if (true == status.offline) {
                 //throw new StarIOPortException("A printer is offline");
-                sendEvent("printerOffline", null);
+                callbackContext.error("printerOffline");
                 return false;
             }
 
@@ -275,18 +308,18 @@ public class StarIOPlugin extends CordovaPlugin {
             status = port.endCheckedBlock();
 
             if (status.coverOpen == true) {
-                sendEvent("printerCoverOpen", null);
+                callbackContext.error("printerCoverOpen");
                 return false;
             } else if (status.receiptPaperEmpty == true) {
-                sendEvent("printerPaperEmpty", null);
+                callbackContext.error("printerPaperEmpty");
                 return false;
             } else if (status.offline == true) {
-                sendEvent("printerOffline", null);
+                callbackContext.error("printerOffline");
                 return false;
             }
 
         } catch (StarIOPortException e) {
-            sendEvent("printerImpossible", e.getMessage());
+            callbackContext.error("printerImpossible" + e.getMessage());
         } finally {
             if (port != null) {
                 try {
@@ -294,6 +327,7 @@ public class StarIOPlugin extends CordovaPlugin {
                 } catch (StarIOPortException e) {
                 }
             }
+            callbackContext.success("printed");
             return true;
         }
     }
@@ -343,6 +377,3 @@ public class StarIOPlugin extends CordovaPlugin {
 
 
 }
-
-
-
