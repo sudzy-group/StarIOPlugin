@@ -381,6 +381,54 @@ static NSString *dataCallbackId = nil;
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+-(void)openExternalCashDrawer:(CDVInvokedUrlCommand *)command {
+    NSLog(@"opening external cash drawer");
+    
+    [self.commandDelegate runInBackground:^{
+        NSString *portName = nil;
+        SMPort *port = nil;
+        BOOL releasePort = false;
+        
+        if (command.arguments.count > 0) {
+            portName = [command.arguments objectAtIndex:0];
+        }
+        
+        if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
+            port = [SMPort getPort:portName :@"" :10000];
+            releasePort = true;
+        } else {
+            port = [_starIoExtManager port];
+        }
+        
+        unsigned char openCashDrawerCommand = 0x1a;
+        
+        NSData *commandData = [NSData dataWithBytes:&openCashDrawerCommand length:1];
+        
+        if (_starIoExtManager != nil) {
+            [_starIoExtManager.lock lock];
+        }
+        
+        BOOL printResult;
+        
+        @try {
+            printResult = [StarIOPlugin_Communication sendCommands:commandData port:port];
+        }
+        @finally {
+            if (port != nil && releasePort) {
+                [SMPort releasePort:port];
+            }
+        }
+        
+        if (_starIoExtManager != nil) {
+            [_starIoExtManager.lock unlock];
+        }
+        
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:printResult];
+        [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+    }];
+    
+}
+
 -(void)openCashDrawer:(CDVInvokedUrlCommand *)command {
     NSLog(@"opening cash drawer");
     

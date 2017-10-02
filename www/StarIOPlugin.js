@@ -51,6 +51,14 @@ module.exports = {
                 callback(error)
             }, 'StarIOPlugin', 'printImage', [port, receipt]);
     },
+    openExternalCashDrawer: function (port, callback) {
+        exec(function (result) {
+                callback(null, result)
+            },
+            function (error) {
+                callback(error)
+            }, 'StarIOPlugin', 'openExternalCashDrawer', [port]);
+    },
     openCashDrawer: function (port, callback) {
         exec(function (result) {
                 callback(null, result)
