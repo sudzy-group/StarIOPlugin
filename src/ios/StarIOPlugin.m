@@ -311,7 +311,7 @@ static NSString *dataCallbackId = nil;
             content = [command.arguments objectAtIndex:1];
         }
         
-        if (_starIoExtManager == nil || _starIoExtManager.port == nil) {
+       if (_starIoExtManager == nil || _starIoExtManager.port == nil || [portName hasPrefix:@"TCP"] ) {
             port = [SMPort getPort:portName :@"" :10000];
             releasePort = true;
         } else {
