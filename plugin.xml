@@ -4,10 +4,9 @@
   <name>StarIOPlugin</name>
   <description>pluging to use StarIO printer</description>
 
-  <engines>
-    <engine name="cordova" version=">=3.4.0"/>
-  </engines>
-
+ <engines>
+      <engine name="cordova-ios" version=">=4.0.0" />
+    </engines>
 
   <js-module src="www/StarIOPlugin.js" name="StarPrinter">
     <clobbers target="window.plugins.starPrinter" />
