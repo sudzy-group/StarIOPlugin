@@ -1,5 +1,7 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<plugin id="fr.sellsy.startio" version="0.0.7" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<plugin id="fr.sellsy.startio" version="0.0.7" xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+>
 
   <name>StarIOPlugin</name>
   <description>pluging to use StarIO printer</description>
