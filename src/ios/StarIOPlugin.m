@@ -68,7 +68,6 @@ static NSString *dataCallbackId = nil;
     NSString    *callbackId     = [command.arguments objectAtIndex:0];
     NSString    *objectAtIndex0 = [command.arguments objectAtIndex:0];
     
-    CDVViewController   *mvcCDVPlugin = (CDVViewController *)[super viewController];
     CDVPluginResult     *result;
     
     // [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
