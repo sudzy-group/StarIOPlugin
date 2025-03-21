@@ -41,15 +41,7 @@ static NSString *dataCallbackId = nil;
 - (void)init:(CDVInvokedUrlCommand *)command
 {
     NSLog(@"init called from %@!", [self class]);
-    
-    if (self.hasPendingOperation) {
-        //        [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
-        NSLog(@"%@.hasPendingOperation = YES", [self class]);
-    } else {
-        //        [self.commandDelegate runInBackground:^{NSLog(@"BackGround Thread sample code!");}];
-        NSLog(@"%@.hasPendingOperation = NO", [self class]);
-    }
-    
+        
     NSString    *systemVersion      = [[UIDevice currentDevice] systemVersion];
     BOOL        isLessThaniOS4      = ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedAscending);
     BOOL        isGreaterThaniOS4   = ([systemVersion compare:@"4.0" options:NSNumericSearch] == NSOrderedDescending);
@@ -85,7 +77,7 @@ static NSString *dataCallbackId = nil;
     
     if ([objectAtIndex0 isEqualToString:@"success"]) {
         NSString *jsString = kCDVPluginINIT;
-        [mvcCDVPlugin.webViewEngine evaluateJavaScript:jsString completionHandler:^(id id, NSError * error) {
+        [self.webViewEngine evaluateJavaScript:jsString completionHandler:^(id id, NSError * error) {
             NSLog(@"Initialized StarIOPlugin and notified webViewEngine");
         }];
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Success! const kCDVPluginINIT was evaluated by webview!"];
